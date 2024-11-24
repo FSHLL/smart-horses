@@ -57,7 +57,7 @@ import { boardHasPoints, findBestMove, findHorsePosition, getValidMoves, witheHo
 import { useSmartHorsesStore } from '@/stores/smartHorsesStore';
 import { message, Modal } from 'ant-design-vue';
 import { SmileTwoTone } from '@ant-design/icons-vue';
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 
 const spinning = ref(false);
 
@@ -155,6 +155,12 @@ const start = () => {
   smartHorsesStore.start()
   machineMove()
 }
+
+watch(() => smartHorsesStore.automatic, (value) => {
+  if (value && smartHorsesStore.turn === representations.darkHorse) {
+    automaticMove()
+  }
+})
 </script>
 
 <style>
