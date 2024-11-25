@@ -3,22 +3,22 @@ import { representations } from "@/constants/representations"
 export const getValidMoves = (board, position) => {
     const moves = [
         [2, 1], [2, -1], [-2, 1], [-2, -1], [1, 2], [1, -2], [-1, 2], [-1, -2],
-    ];
-    const [x, y] = position;
-    const validMoves = [];
+    ]
+    const [x, y] = position
+    const validMoves = []
 
     for (const [dx, dy] of moves) {
-        const nx = x + dx;
-        const ny = y + dy;
+        const nx = x + dx
+        const ny = y + dy
         if (nx >= 0 && nx < board.length && ny >= 0 && ny < board[0].length && board[nx][ny] !== representations.darkHorse && board[nx][ny] !== representations.whiteHorse) {
-            validMoves.push([nx, ny]);
+            validMoves.push([nx, ny])
         }
     }
-    return validMoves;
-};
+    return validMoves
+}
 
 export const makeMove = (state, player, move) => {
-    const { matrix, scores, x2 } = state;
+    const { matrix, scores, x2 } = state
     const [x, y] = move
     const current = player
     const opponent = player === representations.darkHorse ? representations.whiteHorse : representations.darkHorse
@@ -40,52 +40,62 @@ export const makeMove = (state, player, move) => {
 
 export const witheHorseCriteria = (isMaximizing) => {
     return isMaximizing ? representations.whiteHorse : representations.darkHorse
-};
+}
 
 export const darkHorseCriteria = (isMaximizing) => {
     return isMaximizing ? representations.darkHorse : representations.whiteHorse
-};
+}
 
 export const witheHorsePoints = (state) => {
-    return state.scores[representations.whiteHorse] - state.scores[representations.darkHorse]
-};
+    const { scores, matrix } = state
+
+    const scoreDifference = scores[representations.whiteHorse] - scores[representations.darkHorse]
+
+    const playerPosition = findHorsePosition(matrix, representations.whiteHorse)
+    const minDistanceToPoints = findClosestPointDistance(matrix, playerPosition, true)
+    const minDistanceToExtraPoints = findClosestPointDistance(matrix, playerPosition, false)
+
+    const proximityToPoints = minDistanceToPoints === Infinity ? 0 : -minDistanceToPoints
+    const proximityToExtraPoints = minDistanceToExtraPoints === Infinity ? 0 : -minDistanceToExtraPoints * 2 // Valorar más las casillas con extraPoints
+
+    return scoreDifference + proximityToPoints + proximityToExtraPoints
+}
 
 export const darkHorsePointsAndDistance = (state) => {
-    const { scores,matrix } = state
+    const { scores, matrix } = state
 
     const scoreDifference = scores[representations.darkHorse] - scores[representations.whiteHorse]
 
     const playerPosition = findHorsePosition(matrix, representations.darkHorse)
+    const minDistanceToPoints = findClosestPointDistance(matrix, playerPosition, true)
 
-    const minDistance = findClosestPointDistance(matrix, playerPosition)
+    const proximityToPoints = minDistanceToPoints === Infinity ? 0 : -minDistanceToPoints * 10
 
-    const proximity = minDistance === Infinity ? 0 : -minDistance
+    return scoreDifference + proximityToPoints
+}
 
-    return scoreDifference + proximity
-};
-
-const findClosestPointDistance = (board, start) => {
-    const queue = [[...start, 0]];
-    const visited = new Set();
-    visited.add(start.toString());
+const findClosestPointDistance = (board, start, searchPoints = true) => {
+    const queue = [[...start, 0]]
+    const visited = new Set()
+    visited.add(start.toString())
 
     while (queue.length > 0) {
-        const [x, y, dist] = queue.shift();
+        const [x, y, dist] = queue.shift()
 
-        if (board[x][y] >= 1 && board[x][y] <= 10) {
-            return dist;
+        if (searchPoints && board[x][y] >= 1 && board[x][y] <= 10) {
+            return dist
         }
 
-        const validMoves = getValidMoves(board, [x, y]);
+        const validMoves = getValidMoves(board, [x, y])
         for (const [nx, ny] of validMoves) {
             if (!visited.has([nx, ny].toString())) {
-                visited.add([nx, ny].toString());
-                queue.push([nx, ny, dist + 1]);
+                visited.add([nx, ny].toString())
+                queue.push([nx, ny, dist + 1])
             }
         }
     }
 
-    return Infinity;
+    return Infinity
 }
 
 const minimax = (state, depth, isMaximizing, heuristic, maximizingCriteria) => {
@@ -101,7 +111,7 @@ const minimax = (state, depth, isMaximizing, heuristic, maximizingCriteria) => {
     const moves = getValidMoves(matrix, currentPosition)
 
     for (const move of moves) {
-        const newState = JSON.parse(JSON.stringify(state));
+        const newState = JSON.parse(JSON.stringify(state))
         makeMove(newState, player, move)
         const score = minimax(newState, depth - 1, !isMaximizing, heuristic, maximizingCriteria)
         bestScore = isMaximizing
@@ -116,11 +126,11 @@ export const findHorsePosition = (board, player) => {
     for (let i = 0; i < board.length; i++) {
         for (let j = 0; j < board[i].length; j++) {
             if (board[i][j] === player) {
-                return [i, j];
+                return [i, j]
             }
         }
     }
-};
+}
 
 export const boardHasPoints = (board) => {
     let numberOfPoint = 0
@@ -132,26 +142,26 @@ export const boardHasPoints = (board) => {
         }
     }
     return numberOfPoint > 0
-};
+}
 
 export const findBestMove = (state, depth = 2, heuristic, maximizingCriteria) => {
-    const player = state.turn;
-    const currentPosition = findHorsePosition(state.matrix, player);
-    const moves = getValidMoves(state.matrix, currentPosition);
+    const player = state.turn
+    const currentPosition = findHorsePosition(state.matrix, player)
+    const moves = getValidMoves(state.matrix, currentPosition)
 
-    let bestMove = null;
-    let bestScore = -Infinity;
+    let bestMove = null
+    let bestScore = -Infinity
 
     for (const move of moves) {
-        const storeState = { ...state.$state };
-        const newState = JSON.parse(JSON.stringify(storeState));
-        makeMove(newState, player, move);
-        const score = minimax(newState, depth, true, heuristic, maximizingCriteria);
+        const storeState = { ...state.$state }
+        const newState = JSON.parse(JSON.stringify(storeState))
+        makeMove(newState, player, move)
+        const score = minimax(newState, depth, true, heuristic, maximizingCriteria)
         if (score > bestScore) {
-            bestScore = score;
-            bestMove = move;
+            bestScore = score
+            bestMove = move
         }
     }
 
-    return bestMove;
-};
+    return bestMove
+}
