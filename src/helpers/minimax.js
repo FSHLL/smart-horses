@@ -72,7 +72,7 @@ const findClosestPointDistance = (board, start) => {
     while (queue.length > 0) {
         const [x, y, dist] = queue.shift();
 
-        if (!isNaN(parseInt(board[x][y]))) {
+        if (board[x][y] >= 1 && board[x][y] <= 10) {
             return dist;
         }
 
