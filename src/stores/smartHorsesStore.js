@@ -7,6 +7,7 @@ export const useSmartHorsesStore = defineStore('smart-horses', {
         matrix: [],
         spareMatrix: [],
         level: [2],
+        levelIA2: [2],
         scores: { [representations.whiteHorse]: 0, [representations.darkHorse]: 0 },
         x2: { [representations.whiteHorse]: false, [representations.darkHorse]: false },
         turn: representations.whiteHorse,

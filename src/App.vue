@@ -1,26 +1,31 @@
 <template>
   <a-layout>
-    <a-layout-sider
-      breakpoint="lg"
-      collapsed-width="0"
-      :style="{ height: '100vh', left: 0, top: 0, bottom: 0 }"
-    >
-    <div class="logo" ></div>
+    <a-layout-sider breakpoint="lg" collapsed-width="0" :style="{ height: '100vh', left: 0, top: 0, bottom: 0 }">
+      <div class="logo"></div>
+      <a-divider></a-divider>
       <a-menu v-model:selectedKeys="smartHorsesStore.level" theme="dark" mode="inline">
-        <a-menu-item :key="2">Principiante</a-menu-item>
-        <a-menu-item :key="4">Amateur</a-menu-item>
-        <a-menu-item :key="6">Experto</a-menu-item>
+        <a-sub-menu title="IA 1">
+          <a-menu-item :key="2">Principiante</a-menu-item>
+          <a-menu-item :key="4">Amateur</a-menu-item>
+          <a-menu-item :key="6">Experto</a-menu-item>
+        </a-sub-menu>
       </a-menu>
-    </a-layout-sider >
+      <a-divider></a-divider>
+      <a-menu v-model:selectedKeys="smartHorsesStore.levelIA2" theme="dark" mode="inline">
+        <a-sub-menu title="IA 2">
+          <a-menu-item :key="2">Principiante</a-menu-item>
+          <a-menu-item :key="4">Amateur</a-menu-item>
+          <a-menu-item :key="6">Experto</a-menu-item>
+        </a-sub-menu>
+      </a-menu>
+    </a-layout-sider>
     <a-layout>
-      <a-layout-header :style="{ background: '#fff' }" >
-        <a-page-header
-          title="Smart Horses"
-        />
+      <a-layout-header :style="{ background: '#fff' }">
+        <a-page-header title="Smart Horses" />
       </a-layout-header>
       <a-layout-content :style="{ margin: '24px 16px 0', height: '80vh' }">
         <div :style="{ padding: '24px', background: '#fff', minHeight: '360px' }">
-          <SmartHorses/>
+          <SmartHorses />
         </div>
       </a-layout-content>
       <a-layout-footer :style="{ textAlign: 'center' }">

@@ -125,7 +125,7 @@ const machineMove = () => {
 const automaticMove = () => {
   spinning.value = true
   setTimeout(() => {
-    const bestMove = findBestMove(smartHorsesStore, smartHorsesStore.level[0], darkHorsePointsAndDistance, darkHorseCriteria)
+    const bestMove = findBestMove(smartHorsesStore, smartHorsesStore.levelIA2[0], darkHorsePointsAndDistance, darkHorseCriteria)
 
     makeMove(smartHorsesStore, smartHorsesStore.turn, bestMove)
     spinning.value = false
