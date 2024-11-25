@@ -1,5 +1,4 @@
 import { representations } from "@/constants/representations"
-// import { useSmartHorsesStore } from "@/stores/smartHorsesStore";
 
 export const getValidMoves = (board, position) => {
     const moves = [
@@ -23,15 +22,8 @@ export const makeMove = (state, player, move) => {
     const [x, y] = move
     const current = player
     const opponent = player === representations.darkHorse ? representations.whiteHorse : representations.darkHorse
-    // let restoreRepresentation = false
 
-    let currentPosition;
-    for (let i = 0; i < matrix.length; i++) {
-        for (let j = 0; j < matrix[i].length; j++) {
-            if (matrix[i][j] === current) currentPosition = [i, j]
-        }
-    }
-
+    const currentPosition = findHorsePosition(matrix, current)
     matrix[currentPosition[0]][currentPosition[1]] = 0
 
     if (matrix[x][y] >= 1 && matrix[x][y] <= 10) {
