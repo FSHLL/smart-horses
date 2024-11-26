@@ -15,7 +15,10 @@
         :type="smartHorsesStore.turn === representations.whiteHorse ? 'error' : 'info'"></a-alert>
       <a-divider></a-divider>
       <div class="row">
-        Automatico: <a-switch v-model:checked="smartHorsesStore.automatic" />
+        <a-space>
+          Automatico: <a-switch v-model:checked="smartHorsesStore.automatic" />
+          <a-button @click="restart">Reiniciar</a-button>
+        </a-space>
       </div>
       <a-spin :spinning="spinning && smartHorsesStore.automatic">
         <a-divider></a-divider>
@@ -154,6 +157,23 @@ const move = (cell) => {
 const start = () => {
   smartHorsesStore.start()
   machineMove()
+}
+
+const restart = () => {
+  let active = false
+  if (smartHorsesStore.automatic) {
+    spinning.value = true
+    smartHorsesStore.automatic = false
+    active = true
+  }
+  setTimeout(() => {
+    smartHorsesStore.start()
+    spinning.value = false
+    if (active) {
+      smartHorsesStore.automatic = true
+    }
+    machineMove()
+  }, 2000);
 }
 
 watch(() => smartHorsesStore.automatic, (value) => {
