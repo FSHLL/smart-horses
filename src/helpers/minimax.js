@@ -63,6 +63,19 @@ export const darkHorsePointsAndDistance = (state) => {
     return scoreDifference + proximityToPoints
 }
 
+export const whiteHorsePointsAndDistance = (state) => {
+    const { scores, matrix } = state
+
+    const scoreDifference = scores[representations.whiteHorse] - scores[representations.darkHorse]
+
+    const playerPosition = findHorsePosition(matrix, representations.whiteHorse)
+    const minDistanceToPoints = findClosestPointDistance(matrix, playerPosition, true)
+
+    const proximityToPoints = minDistanceToPoints === Infinity ? 0 : -minDistanceToPoints
+
+    return scoreDifference + proximityToPoints
+}
+
 const findClosestPointDistance = (board, start, searchPoints = true) => {
     const queue = [[...start, 0]]
     const visited = new Set()

@@ -56,7 +56,7 @@
 
 <script setup>
 import { representations, getColorByRepresentation } from '@/constants/representations';
-import { boardHasPoints, findBestMove, findHorsePosition, getValidMoves, witheHorsePoints, makeMove, darkHorsePointsAndDistance, darkHorseCriteria, witheHorseCriteria } from '@/helpers/minimax';
+import { boardHasPoints, findBestMove, findHorsePosition, getValidMoves, makeMove, darkHorsePointsAndDistance, darkHorseCriteria, witheHorseCriteria, whiteHorsePointsAndDistance } from '@/helpers/minimax';
 import { useSmartHorsesStore } from '@/stores/smartHorsesStore';
 import { message, Modal } from 'ant-design-vue';
 import { SmileTwoTone } from '@ant-design/icons-vue';
@@ -114,7 +114,7 @@ const checkFinish = () => {
 const machineMove = () => {
   spinning.value = true
   setTimeout(() => {
-    const bestMove = findBestMove(smartHorsesStore, smartHorsesStore.level[0], witheHorsePoints, witheHorseCriteria)
+    const bestMove = findBestMove(smartHorsesStore, smartHorsesStore.level[0], whiteHorsePointsAndDistance, witheHorseCriteria)
 
     makeMove(smartHorsesStore, smartHorsesStore.turn, bestMove)
     spinning.value = false
