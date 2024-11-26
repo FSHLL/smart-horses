@@ -47,18 +47,7 @@ export const darkHorseCriteria = (isMaximizing) => {
 }
 
 export const witheHorsePoints = (state) => {
-    const { scores, matrix } = state
-
-    const scoreDifference = scores[representations.whiteHorse] - scores[representations.darkHorse]
-
-    const playerPosition = findHorsePosition(matrix, representations.whiteHorse)
-    const minDistanceToPoints = findClosestPointDistance(matrix, playerPosition, true)
-    const minDistanceToExtraPoints = findClosestPointDistance(matrix, playerPosition, false)
-
-    const proximityToPoints = minDistanceToPoints === Infinity ? 0 : -minDistanceToPoints
-    const proximityToExtraPoints = minDistanceToExtraPoints === Infinity ? 0 : -minDistanceToExtraPoints * 2 // Valorar más las casillas con extraPoints
-
-    return scoreDifference + proximityToPoints + proximityToExtraPoints
+    return state.scores[representations.whiteHorse] - state.scores[representations.darkHorse]
 }
 
 export const darkHorsePointsAndDistance = (state) => {
@@ -69,7 +58,7 @@ export const darkHorsePointsAndDistance = (state) => {
     const playerPosition = findHorsePosition(matrix, representations.darkHorse)
     const minDistanceToPoints = findClosestPointDistance(matrix, playerPosition, true)
 
-    const proximityToPoints = minDistanceToPoints === Infinity ? 0 : -minDistanceToPoints * 10
+    const proximityToPoints = minDistanceToPoints === Infinity ? 0 : -minDistanceToPoints
 
     return scoreDifference + proximityToPoints
 }
@@ -102,7 +91,7 @@ const minimax = (state, depth, isMaximizing, heuristic, maximizingCriteria) => {
     const { matrix } = state
     const player = maximizingCriteria(isMaximizing)
 
-    if (!boardHasPoints(matrix) || depth === 0) {
+    if (!boardHasPoints(matrix) || depth === 0 || countPoints(matrix) === 1) {
         return heuristic(state)
     }
 
@@ -133,15 +122,19 @@ export const findHorsePosition = (board, player) => {
 }
 
 export const boardHasPoints = (board) => {
-    let numberOfPoint = 0
+    return countPoints(board) > 0
+}
+
+const countPoints = (board) => {
+    let count = 0
     for (let i = 0; i < board.length; i++) {
         for (let j = 0; j < board[i].length; j++) {
-            if (board[i][j] >= 1 && board[i][j] <= 10) {
-                numberOfPoint++
+            if (board[i][j] > 0 && board[i][j] <= 10) {
+                count++
             }
         }
     }
-    return numberOfPoint > 0
+    return count
 }
 
 export const findBestMove = (state, depth = 2, heuristic, maximizingCriteria) => {
