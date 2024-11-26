@@ -91,7 +91,7 @@ const minimax = (state, depth, isMaximizing, heuristic, maximizingCriteria) => {
     const { matrix } = state
     const player = maximizingCriteria(isMaximizing)
 
-    if (!boardHasPoints(matrix) || depth === 0 || countPoints(matrix) === 1) {
+    if (!boardHasPoints(matrix) || depth === 0) {
         return heuristic(state)
     }
 
